@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package controlapi;
-option go_package="github.com/synerex/controlapi";
+package nodeservcontrolapi;
+option go_package="github.com/synerex/synerex_nodeserv_controlapi";
 
 import "google/protobuf/empty.proto";
 
