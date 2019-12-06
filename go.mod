@@ -1,4 +1,4 @@
-module github.com/synerex/synerex_nodeserv_controleapi
+module github.com/synerex/synerex_nodeserv_controlapi
 
 go 1.12
 
