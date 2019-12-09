@@ -7,7 +7,6 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,10 +24,131 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type NodeType int32
+
+const (
+	NodeType_SERVER   NodeType = 0
+	NodeType_PROVIDER NodeType = 1
+	NodeType_GATEWAY  NodeType = 2
+)
+
+var NodeType_name = map[int32]string{
+	0: "SERVER",
+	1: "PROVIDER",
+	2: "GATEWAY",
+}
+
+var NodeType_value = map[string]int32{
+	"SERVER":   0,
+	"PROVIDER": 1,
+	"GATEWAY":  2,
+}
+
+func (x NodeType) String() string {
+	return proto.EnumName(NodeType_name, int32(x))
+}
+
+func (NodeType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_d5d931e58fe526e3, []int{0}
+}
+
+type OrderType int32
+
+const (
+	OrderType_SWITCH_SERVER OrderType = 0
+)
+
+var OrderType_name = map[int32]string{
+	0: "SWITCH_SERVER",
+}
+
+var OrderType_value = map[string]int32{
+	"SWITCH_SERVER": 0,
+}
+
+func (x OrderType) String() string {
+	return proto.EnumName(OrderType_name, int32(x))
+}
+
+func (OrderType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_d5d931e58fe526e3, []int{1}
+}
+
+type NodeInfoFilter struct {
+	NodeType             NodeType `protobuf:"varint,1,opt,name=nodeType,proto3,enum=nodeservcontrolapi.NodeType" json:"nodeType,omitempty"`
+	ClusterId            int32    `protobuf:"varint,2,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
+	AreaId               string   `protobuf:"bytes,3,opt,name=area_id,json=areaId,proto3" json:"area_id,omitempty"`
+	Version              string   `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NodeInfoFilter) Reset()         { *m = NodeInfoFilter{} }
+func (m *NodeInfoFilter) String() string { return proto.CompactTextString(m) }
+func (*NodeInfoFilter) ProtoMessage()    {}
+func (*NodeInfoFilter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d5d931e58fe526e3, []int{0}
+}
+
+func (m *NodeInfoFilter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NodeInfoFilter.Unmarshal(m, b)
+}
+func (m *NodeInfoFilter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NodeInfoFilter.Marshal(b, m, deterministic)
+}
+func (m *NodeInfoFilter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NodeInfoFilter.Merge(m, src)
+}
+func (m *NodeInfoFilter) XXX_Size() int {
+	return xxx_messageInfo_NodeInfoFilter.Size(m)
+}
+func (m *NodeInfoFilter) XXX_DiscardUnknown() {
+	xxx_messageInfo_NodeInfoFilter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NodeInfoFilter proto.InternalMessageInfo
+
+func (m *NodeInfoFilter) GetNodeType() NodeType {
+	if m != nil {
+		return m.NodeType
+	}
+	return NodeType_SERVER
+}
+
+func (m *NodeInfoFilter) GetClusterId() int32 {
+	if m != nil {
+		return m.ClusterId
+	}
+	return 0
+}
+
+func (m *NodeInfoFilter) GetAreaId() string {
+	if m != nil {
+		return m.AreaId
+	}
+	return ""
+}
+
+func (m *NodeInfoFilter) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
 type NodeInfo struct {
-	NodeId               int32    `protobuf:"varint,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
-	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Status               string   `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	NodeName             string   `protobuf:"bytes,1,opt,name=node_name,json=nodeName,proto3" json:"node_name,omitempty"`
+	NodeType             NodeType `protobuf:"varint,2,opt,name=node_type,json=nodeType,proto3,enum=nodeservcontrolapi.NodeType" json:"node_type,omitempty"`
+	ServerInfo           string   `protobuf:"bytes,3,opt,name=server_info,json=serverInfo,proto3" json:"server_info,omitempty"`
+	NodePbaseVersion     string   `protobuf:"bytes,4,opt,name=node_pbase_version,json=nodePbaseVersion,proto3" json:"node_pbase_version,omitempty"`
+	WithNodeId           int32    `protobuf:"varint,5,opt,name=with_node_id,json=withNodeId,proto3" json:"with_node_id,omitempty"`
+	ClusterId            int32    `protobuf:"varint,6,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
+	AreaId               string   `protobuf:"bytes,7,opt,name=area_id,json=areaId,proto3" json:"area_id,omitempty"`
+	ChannelTypes         []uint32 `protobuf:"varint,8,rep,packed,name=channelTypes,proto3" json:"channelTypes,omitempty"`
+	GwInfo               string   `protobuf:"bytes,9,opt,name=gw_info,json=gwInfo,proto3" json:"gw_info,omitempty"`
+	NodeId               int32    `protobuf:"varint,10,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	ServerId             int32    `protobuf:"varint,11,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -38,7 +158,7 @@ func (m *NodeInfo) Reset()         { *m = NodeInfo{} }
 func (m *NodeInfo) String() string { return proto.CompactTextString(m) }
 func (*NodeInfo) ProtoMessage()    {}
 func (*NodeInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d5d931e58fe526e3, []int{0}
+	return fileDescriptor_d5d931e58fe526e3, []int{1}
 }
 
 func (m *NodeInfo) XXX_Unmarshal(b []byte) error {
@@ -59,6 +179,69 @@ func (m *NodeInfo) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NodeInfo proto.InternalMessageInfo
 
+func (m *NodeInfo) GetNodeName() string {
+	if m != nil {
+		return m.NodeName
+	}
+	return ""
+}
+
+func (m *NodeInfo) GetNodeType() NodeType {
+	if m != nil {
+		return m.NodeType
+	}
+	return NodeType_SERVER
+}
+
+func (m *NodeInfo) GetServerInfo() string {
+	if m != nil {
+		return m.ServerInfo
+	}
+	return ""
+}
+
+func (m *NodeInfo) GetNodePbaseVersion() string {
+	if m != nil {
+		return m.NodePbaseVersion
+	}
+	return ""
+}
+
+func (m *NodeInfo) GetWithNodeId() int32 {
+	if m != nil {
+		return m.WithNodeId
+	}
+	return 0
+}
+
+func (m *NodeInfo) GetClusterId() int32 {
+	if m != nil {
+		return m.ClusterId
+	}
+	return 0
+}
+
+func (m *NodeInfo) GetAreaId() string {
+	if m != nil {
+		return m.AreaId
+	}
+	return ""
+}
+
+func (m *NodeInfo) GetChannelTypes() []uint32 {
+	if m != nil {
+		return m.ChannelTypes
+	}
+	return nil
+}
+
+func (m *NodeInfo) GetGwInfo() string {
+	if m != nil {
+		return m.GwInfo
+	}
+	return ""
+}
+
 func (m *NodeInfo) GetNodeId() int32 {
 	if m != nil {
 		return m.NodeId
@@ -66,151 +249,170 @@ func (m *NodeInfo) GetNodeId() int32 {
 	return 0
 }
 
-func (m *NodeInfo) GetName() string {
+func (m *NodeInfo) GetServerId() int32 {
 	if m != nil {
-		return m.Name
+		return m.ServerId
 	}
-	return ""
+	return 0
 }
 
-func (m *NodeInfo) GetStatus() string {
-	if m != nil {
-		return m.Status
-	}
-	return ""
+type NodeInfos struct {
+	Infos                []*NodeInfo `protobuf:"bytes,1,rep,name=infos,proto3" json:"infos,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
 }
 
-type NodeServInfo struct {
-	Provider             *NodeInfo `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
-	Server               *NodeInfo `protobuf:"bytes,2,opt,name=server,proto3" json:"server,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *NodeServInfo) Reset()         { *m = NodeServInfo{} }
-func (m *NodeServInfo) String() string { return proto.CompactTextString(m) }
-func (*NodeServInfo) ProtoMessage()    {}
-func (*NodeServInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d5d931e58fe526e3, []int{1}
-}
-
-func (m *NodeServInfo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NodeServInfo.Unmarshal(m, b)
-}
-func (m *NodeServInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NodeServInfo.Marshal(b, m, deterministic)
-}
-func (m *NodeServInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NodeServInfo.Merge(m, src)
-}
-func (m *NodeServInfo) XXX_Size() int {
-	return xxx_messageInfo_NodeServInfo.Size(m)
-}
-func (m *NodeServInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_NodeServInfo.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_NodeServInfo proto.InternalMessageInfo
-
-func (m *NodeServInfo) GetProvider() *NodeInfo {
-	if m != nil {
-		return m.Provider
-	}
-	return nil
-}
-
-func (m *NodeServInfo) GetServer() *NodeInfo {
-	if m != nil {
-		return m.Server
-	}
-	return nil
-}
-
-type NodeServInfos struct {
-	Infos                []*NodeServInfo `protobuf:"bytes,1,rep,name=infos,proto3" json:"infos,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
-	XXX_unrecognized     []byte          `json:"-"`
-	XXX_sizecache        int32           `json:"-"`
-}
-
-func (m *NodeServInfos) Reset()         { *m = NodeServInfos{} }
-func (m *NodeServInfos) String() string { return proto.CompactTextString(m) }
-func (*NodeServInfos) ProtoMessage()    {}
-func (*NodeServInfos) Descriptor() ([]byte, []int) {
+func (m *NodeInfos) Reset()         { *m = NodeInfos{} }
+func (m *NodeInfos) String() string { return proto.CompactTextString(m) }
+func (*NodeInfos) ProtoMessage()    {}
+func (*NodeInfos) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d5d931e58fe526e3, []int{2}
 }
 
-func (m *NodeServInfos) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NodeServInfos.Unmarshal(m, b)
+func (m *NodeInfos) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NodeInfos.Unmarshal(m, b)
 }
-func (m *NodeServInfos) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NodeServInfos.Marshal(b, m, deterministic)
+func (m *NodeInfos) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NodeInfos.Marshal(b, m, deterministic)
 }
-func (m *NodeServInfos) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NodeServInfos.Merge(m, src)
+func (m *NodeInfos) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NodeInfos.Merge(m, src)
 }
-func (m *NodeServInfos) XXX_Size() int {
-	return xxx_messageInfo_NodeServInfos.Size(m)
+func (m *NodeInfos) XXX_Size() int {
+	return xxx_messageInfo_NodeInfos.Size(m)
 }
-func (m *NodeServInfos) XXX_DiscardUnknown() {
-	xxx_messageInfo_NodeServInfos.DiscardUnknown(m)
+func (m *NodeInfos) XXX_DiscardUnknown() {
+	xxx_messageInfo_NodeInfos.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NodeServInfos proto.InternalMessageInfo
+var xxx_messageInfo_NodeInfos proto.InternalMessageInfo
 
-func (m *NodeServInfos) GetInfos() []*NodeServInfo {
+func (m *NodeInfos) GetInfos() []*NodeInfo {
 	if m != nil {
 		return m.Infos
 	}
 	return nil
 }
 
-type NodePair struct {
-	ProviderNodeId       int32    `protobuf:"varint,1,opt,name=provider_node_id,json=providerNodeId,proto3" json:"provider_node_id,omitempty"`
-	ServerNodeId         int32    `protobuf:"varint,2,opt,name=server_node_id,json=serverNodeId,proto3" json:"server_node_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type Order struct {
+	TargetNode *NodeInfo `protobuf:"bytes,1,opt,name=targetNode,proto3" json:"targetNode,omitempty"`
+	OrderType  OrderType `protobuf:"varint,2,opt,name=orderType,proto3,enum=nodeservcontrolapi.OrderType" json:"orderType,omitempty"`
+	// Types that are valid to be assigned to OrderInfo:
+	//	*Order_SwitchInfo
+	OrderInfo            isOrder_OrderInfo `protobuf_oneof:"orderInfo"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
-func (m *NodePair) Reset()         { *m = NodePair{} }
-func (m *NodePair) String() string { return proto.CompactTextString(m) }
-func (*NodePair) ProtoMessage()    {}
-func (*NodePair) Descriptor() ([]byte, []int) {
+func (m *Order) Reset()         { *m = Order{} }
+func (m *Order) String() string { return proto.CompactTextString(m) }
+func (*Order) ProtoMessage()    {}
+func (*Order) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d5d931e58fe526e3, []int{3}
 }
 
-func (m *NodePair) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NodePair.Unmarshal(m, b)
+func (m *Order) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Order.Unmarshal(m, b)
 }
-func (m *NodePair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NodePair.Marshal(b, m, deterministic)
+func (m *Order) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Order.Marshal(b, m, deterministic)
 }
-func (m *NodePair) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NodePair.Merge(m, src)
+func (m *Order) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Order.Merge(m, src)
 }
-func (m *NodePair) XXX_Size() int {
-	return xxx_messageInfo_NodePair.Size(m)
+func (m *Order) XXX_Size() int {
+	return xxx_messageInfo_Order.Size(m)
 }
-func (m *NodePair) XXX_DiscardUnknown() {
-	xxx_messageInfo_NodePair.DiscardUnknown(m)
+func (m *Order) XXX_DiscardUnknown() {
+	xxx_messageInfo_Order.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NodePair proto.InternalMessageInfo
+var xxx_messageInfo_Order proto.InternalMessageInfo
 
-func (m *NodePair) GetProviderNodeId() int32 {
+func (m *Order) GetTargetNode() *NodeInfo {
 	if m != nil {
-		return m.ProviderNodeId
+		return m.TargetNode
 	}
-	return 0
+	return nil
 }
 
-func (m *NodePair) GetServerNodeId() int32 {
+func (m *Order) GetOrderType() OrderType {
 	if m != nil {
-		return m.ServerNodeId
+		return m.OrderType
 	}
-	return 0
+	return OrderType_SWITCH_SERVER
+}
+
+type isOrder_OrderInfo interface {
+	isOrder_OrderInfo()
+}
+
+type Order_SwitchInfo struct {
+	SwitchInfo *SwitchInfo `protobuf:"bytes,3,opt,name=switchInfo,proto3,oneof"`
+}
+
+func (*Order_SwitchInfo) isOrder_OrderInfo() {}
+
+func (m *Order) GetOrderInfo() isOrder_OrderInfo {
+	if m != nil {
+		return m.OrderInfo
+	}
+	return nil
+}
+
+func (m *Order) GetSwitchInfo() *SwitchInfo {
+	if x, ok := m.GetOrderInfo().(*Order_SwitchInfo); ok {
+		return x.SwitchInfo
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*Order) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*Order_SwitchInfo)(nil),
+	}
+}
+
+type SwitchInfo struct {
+	SxServer             *NodeInfo `protobuf:"bytes,1,opt,name=sxServer,proto3" json:"sxServer,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *SwitchInfo) Reset()         { *m = SwitchInfo{} }
+func (m *SwitchInfo) String() string { return proto.CompactTextString(m) }
+func (*SwitchInfo) ProtoMessage()    {}
+func (*SwitchInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d5d931e58fe526e3, []int{4}
+}
+
+func (m *SwitchInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SwitchInfo.Unmarshal(m, b)
+}
+func (m *SwitchInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SwitchInfo.Marshal(b, m, deterministic)
+}
+func (m *SwitchInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SwitchInfo.Merge(m, src)
+}
+func (m *SwitchInfo) XXX_Size() int {
+	return xxx_messageInfo_SwitchInfo.Size(m)
+}
+func (m *SwitchInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_SwitchInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SwitchInfo proto.InternalMessageInfo
+
+func (m *SwitchInfo) GetSxServer() *NodeInfo {
+	if m != nil {
+		return m.SxServer
+	}
+	return nil
 }
 
 type Response struct {
@@ -224,7 +426,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d5d931e58fe526e3, []int{4}
+	return fileDescriptor_d5d931e58fe526e3, []int{5}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -253,41 +455,58 @@ func (m *Response) GetOk() bool {
 }
 
 func init() {
+	proto.RegisterEnum("nodeservcontrolapi.NodeType", NodeType_name, NodeType_value)
+	proto.RegisterEnum("nodeservcontrolapi.OrderType", OrderType_name, OrderType_value)
+	proto.RegisterType((*NodeInfoFilter)(nil), "nodeservcontrolapi.NodeInfoFilter")
 	proto.RegisterType((*NodeInfo)(nil), "nodeservcontrolapi.NodeInfo")
-	proto.RegisterType((*NodeServInfo)(nil), "nodeservcontrolapi.NodeServInfo")
-	proto.RegisterType((*NodeServInfos)(nil), "nodeservcontrolapi.NodeServInfos")
-	proto.RegisterType((*NodePair)(nil), "nodeservcontrolapi.NodePair")
+	proto.RegisterType((*NodeInfos)(nil), "nodeservcontrolapi.NodeInfos")
+	proto.RegisterType((*Order)(nil), "nodeservcontrolapi.Order")
+	proto.RegisterType((*SwitchInfo)(nil), "nodeservcontrolapi.SwitchInfo")
 	proto.RegisterType((*Response)(nil), "nodeservcontrolapi.Response")
 }
 
 func init() { proto.RegisterFile("nodeserv_controlapi.proto", fileDescriptor_d5d931e58fe526e3) }
 
 var fileDescriptor_d5d931e58fe526e3 = []byte{
-	// 372 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0x4f, 0xf2, 0x40,
-	0x10, 0x86, 0x69, 0xf9, 0xe8, 0x57, 0x07, 0x24, 0x66, 0x0f, 0x58, 0xab, 0x87, 0xda, 0x78, 0xe8,
-	0x69, 0x31, 0x68, 0x8c, 0x67, 0x8d, 0x31, 0x24, 0x06, 0xb5, 0xdc, 0xb8, 0x34, 0x85, 0x2e, 0xd0,
-	0x00, 0xdd, 0x66, 0xb7, 0x45, 0xb9, 0xf8, 0x73, 0xfc, 0x9d, 0x66, 0x77, 0x59, 0xd4, 0x08, 0xe1,
-	0xd4, 0xdd, 0x99, 0x67, 0xde, 0x7d, 0x67, 0xa6, 0x70, 0x92, 0xd1, 0x84, 0x70, 0xc2, 0x96, 0xd1,
-	0x88, 0x66, 0x05, 0xa3, 0xf3, 0x38, 0x4f, 0x71, 0xce, 0x68, 0x41, 0x11, 0xd2, 0xa9, 0xef, 0x8c,
-	0x7b, 0x3a, 0xa1, 0x74, 0x32, 0x27, 0x6d, 0x49, 0x0c, 0xcb, 0x71, 0x9b, 0x2c, 0xf2, 0x62, 0xa5,
-	0x0a, 0xfc, 0x67, 0xb0, 0x7b, 0x34, 0x21, 0xdd, 0x6c, 0x4c, 0xd1, 0x31, 0xfc, 0x17, 0xe5, 0x51,
-	0x9a, 0x38, 0x86, 0x67, 0x04, 0xb5, 0xd0, 0x12, 0xd7, 0x6e, 0x82, 0x10, 0xfc, 0xcb, 0xe2, 0x05,
-	0x71, 0x4c, 0xcf, 0x08, 0x0e, 0x42, 0x79, 0x46, 0x2d, 0xb0, 0x78, 0x11, 0x17, 0x25, 0x77, 0xaa,
-	0x32, 0xba, 0xbe, 0xf9, 0x1f, 0xd0, 0x10, 0x82, 0x7d, 0xc2, 0x96, 0x52, 0xf4, 0x16, 0xec, 0x9c,
-	0xd1, 0x65, 0x9a, 0x10, 0x26, 0x55, 0xeb, 0x9d, 0x33, 0xfc, 0xd7, 0x24, 0xd6, 0x26, 0xc2, 0x0d,
-	0x8d, 0xae, 0xc1, 0x12, 0x10, 0x61, 0xf2, 0xdd, 0x7d, 0x75, 0x6b, 0xd6, 0x7f, 0x84, 0xc3, 0x9f,
-	0xef, 0x73, 0x74, 0x03, 0xb5, 0x54, 0x1c, 0x1c, 0xc3, 0xab, 0x06, 0xf5, 0x8e, 0xb7, 0x4b, 0x45,
-	0x57, 0x84, 0x0a, 0xf7, 0x07, 0x6a, 0x32, 0x2f, 0x71, 0xca, 0x50, 0x00, 0x47, 0xda, 0x56, 0xf4,
-	0x7b, 0x44, 0x4d, 0x1d, 0xef, 0xa9, 0x51, 0x5d, 0x40, 0x53, 0x19, 0xd9, 0x70, 0xa6, 0xe4, 0x1a,
-	0x2a, 0xaa, 0x28, 0xdf, 0x05, 0x3b, 0x24, 0x3c, 0xa7, 0x19, 0x27, 0xa8, 0x09, 0x26, 0x9d, 0x49,
-	0x35, 0x3b, 0x34, 0xe9, 0xac, 0xf3, 0x69, 0x40, 0x5d, 0x60, 0xf7, 0xca, 0x1e, 0xea, 0x02, 0xbc,
-	0x96, 0x84, 0xad, 0x54, 0x37, 0x2d, 0xac, 0xb6, 0x89, 0xf5, 0x36, 0xf1, 0x83, 0xd8, 0xa6, 0x7b,
-	0xbe, 0xaf, 0x2d, 0xee, 0x57, 0xd0, 0x13, 0x34, 0xfa, 0x6f, 0x69, 0x31, 0x9a, 0xf6, 0xa5, 0x19,
-	0xb4, 0x73, 0xa2, 0xa2, 0x69, 0x77, 0x6b, 0x56, 0xdb, 0xf6, 0x2b, 0x77, 0x97, 0x03, 0x3c, 0x49,
-	0x8b, 0x69, 0x39, 0xc4, 0x23, 0xba, 0x68, 0xf3, 0x55, 0x46, 0x18, 0x79, 0xd7, 0xdf, 0x68, 0xcb,
-	0x3f, 0x3a, 0xb4, 0xa4, 0xe9, 0xab, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd7, 0x5b, 0x06, 0x9c,
-	0xc1, 0x02, 0x00, 0x00,
+	// 596 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x51, 0x73, 0xd2, 0x4c,
+	0x14, 0x25, 0xe9, 0x07, 0x24, 0x37, 0x94, 0xe1, 0xdb, 0x97, 0xa6, 0xad, 0xd4, 0x4c, 0x9e, 0x98,
+	0x8e, 0x83, 0x8a, 0x2f, 0x3a, 0x3a, 0xa3, 0x6d, 0xa5, 0x36, 0x2f, 0x50, 0x17, 0xa4, 0xa3, 0x2f,
+	0x99, 0x40, 0xb6, 0x90, 0x29, 0x64, 0x99, 0xdd, 0x50, 0xca, 0x7f, 0xf1, 0x3f, 0xf8, 0x5b, 0xfc,
+	0x43, 0x8e, 0xb3, 0x9b, 0x2c, 0x14, 0xa5, 0xa8, 0x4f, 0xcc, 0xde, 0x73, 0xce, 0xde, 0x73, 0xcf,
+	0x25, 0x0b, 0xfb, 0x31, 0x0d, 0x09, 0x27, 0xec, 0xd6, 0x1f, 0xd0, 0x38, 0x61, 0x74, 0x1c, 0x4c,
+	0xa3, 0xfa, 0x94, 0xd1, 0x84, 0x22, 0xa4, 0xa0, 0x15, 0xe2, 0x7e, 0xd5, 0xa0, 0xdc, 0xa2, 0x21,
+	0xf1, 0xe2, 0x6b, 0x7a, 0x1e, 0x8d, 0x13, 0xc2, 0xd0, 0x4b, 0x30, 0x04, 0xb1, 0xbb, 0x98, 0x12,
+	0x5b, 0x73, 0xb4, 0x5a, 0xb9, 0xf1, 0xa8, 0xfe, 0xbb, 0xb2, 0xde, 0xca, 0x38, 0x78, 0xc9, 0x46,
+	0x55, 0x80, 0xc1, 0x78, 0xc6, 0x13, 0xc2, 0xfc, 0x28, 0xb4, 0x75, 0x47, 0xab, 0xe5, 0xb1, 0x99,
+	0x55, 0xbc, 0x10, 0xed, 0x41, 0x31, 0x60, 0x24, 0x10, 0xd8, 0x8e, 0xa3, 0xd5, 0x4c, 0x5c, 0x10,
+	0x47, 0x2f, 0x44, 0x36, 0x14, 0x6f, 0x09, 0xe3, 0x11, 0x8d, 0xed, 0xff, 0x24, 0xa0, 0x8e, 0xee,
+	0x0f, 0x1d, 0x0c, 0x65, 0x0f, 0x1d, 0x82, 0x29, 0x5a, 0xf9, 0x71, 0x30, 0x49, 0x9d, 0x99, 0x69,
+	0xef, 0x56, 0x30, 0x21, 0xe8, 0x55, 0x06, 0x26, 0xc2, 0xb6, 0xfe, 0x4f, 0xb6, 0x1f, 0x83, 0x25,
+	0x48, 0xc2, 0x75, 0x7c, 0x4d, 0x33, 0x6f, 0x90, 0x96, 0x64, 0xe3, 0x27, 0x20, 0xa3, 0xf3, 0xa7,
+	0xfd, 0x80, 0x13, 0x7f, 0xdd, 0x6a, 0x45, 0x20, 0x97, 0x02, 0xe8, 0xa5, 0x75, 0xe4, 0x40, 0x69,
+	0x1e, 0x25, 0x23, 0x5f, 0x4a, 0xa2, 0xd0, 0xce, 0xcb, 0x1c, 0x40, 0xd4, 0xe4, 0x28, 0xe1, 0x2f,
+	0x39, 0x15, 0xb6, 0xe4, 0x54, 0x5c, 0xcb, 0xc9, 0x85, 0xd2, 0x60, 0x14, 0xc4, 0x31, 0x19, 0x0b,
+	0xdf, 0xdc, 0x36, 0x9c, 0x9d, 0xda, 0x2e, 0x5e, 0xab, 0x09, 0xf1, 0x70, 0x9e, 0x0e, 0x62, 0xa6,
+	0xe2, 0xe1, 0x5c, 0x0e, 0xb1, 0x07, 0x45, 0xe5, 0x08, 0x64, 0xc7, 0x42, 0x9c, 0xba, 0x39, 0x04,
+	0x53, 0x8d, 0x1f, 0xda, 0x96, 0x84, 0x8c, 0x6c, 0xf8, 0xd0, 0x7d, 0x0b, 0xa6, 0xca, 0x9f, 0xa3,
+	0x06, 0xe4, 0xc5, 0xc5, 0xdc, 0xd6, 0x9c, 0x9d, 0x9a, 0xf5, 0x70, 0xbe, 0x82, 0x8d, 0x53, 0xaa,
+	0xfb, 0x5d, 0x83, 0x7c, 0x9b, 0x85, 0x84, 0xa1, 0x37, 0x00, 0x49, 0xc0, 0x86, 0x24, 0x11, 0x14,
+	0xb9, 0xbf, 0x3f, 0x5d, 0x71, 0x8f, 0x8f, 0x5e, 0x83, 0x49, 0xc5, 0x35, 0xdd, 0xd5, 0x7e, 0xab,
+	0x9b, 0xc4, 0x6d, 0x45, 0xc2, 0x2b, 0x3e, 0x7a, 0x07, 0xc0, 0xe7, 0x51, 0x32, 0x18, 0x79, 0x6a,
+	0xc1, 0x56, 0xe3, 0x68, 0x93, 0xba, 0xb3, 0x64, 0x5d, 0xe4, 0xf0, 0x3d, 0xcd, 0xa9, 0x95, 0xb5,
+	0x17, 0x07, 0xf7, 0x1c, 0x60, 0x45, 0x14, 0xdf, 0x0b, 0xbf, 0xeb, 0xc8, 0xc0, 0xfe, 0x6a, 0xaa,
+	0x25, 0xdb, 0x3d, 0x00, 0x03, 0x13, 0x3e, 0xa5, 0x31, 0x27, 0xa8, 0x0c, 0x3a, 0xbd, 0x91, 0x7a,
+	0x03, 0xeb, 0xf4, 0xe6, 0xf8, 0x79, 0xfa, 0xc7, 0x97, 0xf6, 0x01, 0x0a, 0x9d, 0x26, 0xee, 0x35,
+	0x71, 0x25, 0x87, 0x4a, 0x60, 0x5c, 0xe2, 0x76, 0xcf, 0x7b, 0xdf, 0xc4, 0x15, 0x0d, 0x59, 0x50,
+	0xfc, 0x70, 0xd2, 0x6d, 0x5e, 0x9d, 0x7c, 0xae, 0xe8, 0xc7, 0x47, 0x60, 0x2e, 0xa7, 0x47, 0xff,
+	0xc3, 0x6e, 0xe7, 0xca, 0xeb, 0x9e, 0x5d, 0xf8, 0x4a, 0xda, 0xf8, 0xa6, 0x81, 0x25, 0xee, 0x3c,
+	0x4b, 0x4d, 0xa1, 0x4f, 0x50, 0xfe, 0x38, 0x23, 0x6c, 0xb1, 0x5a, 0xb0, 0xbb, 0xcd, 0x78, 0xfa,
+	0x3c, 0x1c, 0x54, 0xb7, 0x71, 0xb8, 0x9b, 0x43, 0x1e, 0x94, 0xb2, 0x0e, 0xa2, 0xca, 0xd1, 0xfe,
+	0x83, 0x6b, 0x3a, 0xd8, 0x18, 0x94, 0x8a, 0xc4, 0xcd, 0x9d, 0x3e, 0xfb, 0x52, 0x1f, 0x46, 0xc9,
+	0x68, 0xd6, 0xaf, 0x0f, 0xe8, 0xe4, 0x29, 0x5f, 0xc4, 0x84, 0x91, 0x3b, 0xf5, 0xeb, 0x6f, 0x78,
+	0xe9, 0xfa, 0x05, 0xf9, 0xd4, 0xbd, 0xf8, 0x19, 0x00, 0x00, 0xff, 0xff, 0x61, 0x51, 0x2e, 0xab,
+	0x07, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -302,10 +521,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type NodeControlClient interface {
-	// get connection info (synerex server and provider)
-	QueryInfos(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*NodeServInfos, error)
-	// change relations between provider and synerex server
-	SwitchServer(ctx context.Context, in *NodePair, opts ...grpc.CallOption) (*Response, error)
+	QueryNodeInfos(ctx context.Context, in *NodeInfoFilter, opts ...grpc.CallOption) (*NodeInfos, error)
+	ControlNodes(ctx context.Context, in *Order, opts ...grpc.CallOption) (*Response, error)
 }
 
 type nodeControlClient struct {
@@ -316,18 +533,18 @@ func NewNodeControlClient(cc *grpc.ClientConn) NodeControlClient {
 	return &nodeControlClient{cc}
 }
 
-func (c *nodeControlClient) QueryInfos(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*NodeServInfos, error) {
-	out := new(NodeServInfos)
-	err := c.cc.Invoke(ctx, "/nodeservcontrolapi.NodeControl/QueryInfos", in, out, opts...)
+func (c *nodeControlClient) QueryNodeInfos(ctx context.Context, in *NodeInfoFilter, opts ...grpc.CallOption) (*NodeInfos, error) {
+	out := new(NodeInfos)
+	err := c.cc.Invoke(ctx, "/nodeservcontrolapi.NodeControl/QueryNodeInfos", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nodeControlClient) SwitchServer(ctx context.Context, in *NodePair, opts ...grpc.CallOption) (*Response, error) {
+func (c *nodeControlClient) ControlNodes(ctx context.Context, in *Order, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/nodeservcontrolapi.NodeControl/SwitchServer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/nodeservcontrolapi.NodeControl/ControlNodes", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -336,59 +553,57 @@ func (c *nodeControlClient) SwitchServer(ctx context.Context, in *NodePair, opts
 
 // NodeControlServer is the server API for NodeControl service.
 type NodeControlServer interface {
-	// get connection info (synerex server and provider)
-	QueryInfos(context.Context, *empty.Empty) (*NodeServInfos, error)
-	// change relations between provider and synerex server
-	SwitchServer(context.Context, *NodePair) (*Response, error)
+	QueryNodeInfos(context.Context, *NodeInfoFilter) (*NodeInfos, error)
+	ControlNodes(context.Context, *Order) (*Response, error)
 }
 
 // UnimplementedNodeControlServer can be embedded to have forward compatible implementations.
 type UnimplementedNodeControlServer struct {
 }
 
-func (*UnimplementedNodeControlServer) QueryInfos(ctx context.Context, req *empty.Empty) (*NodeServInfos, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryInfos not implemented")
+func (*UnimplementedNodeControlServer) QueryNodeInfos(ctx context.Context, req *NodeInfoFilter) (*NodeInfos, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryNodeInfos not implemented")
 }
-func (*UnimplementedNodeControlServer) SwitchServer(ctx context.Context, req *NodePair) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SwitchServer not implemented")
+func (*UnimplementedNodeControlServer) ControlNodes(ctx context.Context, req *Order) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ControlNodes not implemented")
 }
 
 func RegisterNodeControlServer(s *grpc.Server, srv NodeControlServer) {
 	s.RegisterService(&_NodeControl_serviceDesc, srv)
 }
 
-func _NodeControl_QueryInfos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+func _NodeControl_QueryNodeInfos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NodeInfoFilter)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeControlServer).QueryInfos(ctx, in)
+		return srv.(NodeControlServer).QueryNodeInfos(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/nodeservcontrolapi.NodeControl/QueryInfos",
+		FullMethod: "/nodeservcontrolapi.NodeControl/QueryNodeInfos",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeControlServer).QueryInfos(ctx, req.(*empty.Empty))
+		return srv.(NodeControlServer).QueryNodeInfos(ctx, req.(*NodeInfoFilter))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NodeControl_SwitchServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NodePair)
+func _NodeControl_ControlNodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Order)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeControlServer).SwitchServer(ctx, in)
+		return srv.(NodeControlServer).ControlNodes(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/nodeservcontrolapi.NodeControl/SwitchServer",
+		FullMethod: "/nodeservcontrolapi.NodeControl/ControlNodes",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeControlServer).SwitchServer(ctx, req.(*NodePair))
+		return srv.(NodeControlServer).ControlNodes(ctx, req.(*Order))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -398,12 +613,12 @@ var _NodeControl_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*NodeControlServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "QueryInfos",
-			Handler:    _NodeControl_QueryInfos_Handler,
+			MethodName: "QueryNodeInfos",
+			Handler:    _NodeControl_QueryNodeInfos_Handler,
 		},
 		{
-			MethodName: "SwitchServer",
-			Handler:    _NodeControl_SwitchServer_Handler,
+			MethodName: "ControlNodes",
+			Handler:    _NodeControl_ControlNodes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
