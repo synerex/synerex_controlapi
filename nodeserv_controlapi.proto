@@ -13,6 +13,7 @@ message NodeInfoFilter {
     int32 cluster_id = 2;
     string area_id = 3;
     string version = 4;
+    uint32 channel = 5;
 }
 
 enum NodeType {
