@@ -1,47 +1,36 @@
 syntax = "proto3";
 
 package nodeservcontrolapi;
+
+import "github.com/synerex/synerex_nodeapi/nodeapi.proto";
+
 option go_package="github.com/synerex/synerex_nodeserv_controlapi";
 
 service NodeControl {
-    rpc QueryNodeInfos(NodeInfoFilter) returns (NodeInfos){}
-    rpc ControlNodes(Order) returns (Response){}
+    rpc QueryNodeInfos(NodeControlFilter) returns (NodeControlInfos){}
+    rpc ControlNodes(Order) returns (NodeControlResponse){}
 }
 
-message NodeInfoFilter {
-    NodeType nodeType = 1; // default: all
+message NodeControlFilter {
+    nodeapi.NodeType nodeType = 1; // default: all
     int32 cluster_id = 2;
     string area_id = 3;
     string version = 4;
     uint32 channel = 5;
 }
 
-enum NodeType {
-   SERVER = 0;
-   PROVIDER = 1;
-   GATEWAY = 2;
+message NodeControlInfo{
+    nodeapi.NodeInfo nodeInfo = 1;
+    int32 node_id = 2;
+    int32 server_id = 3;
 }
 
-message NodeInfo{
-    string node_name = 1;
-    NodeType node_type = 2; // node is provider/server/gateway?
-    string server_info = 3; // for synerex servers/gateways
-    string node_pbase_version = 4; // which protocol base version
-    int32 with_node_id = 5;  // for reconnection with previous node_id (usually -1)
-    int32 cluster_id = 6; //
-    string area_id = 7; // for area definition
-    repeated uint32 channelTypes = 8; // used channel list
-    string gw_info = 9; // for gateway information
-    int32 node_id = 10;
-    int32 server_id = 11;
-}
-
-message NodeInfos {
-    repeated NodeInfo infos = 1;
+message NodeControlInfos {
+    repeated NodeControlInfo infos = 1;
 }
 
 message Order {
-    NodeInfo targetNode = 1;
+    NodeControlInfo targetNode = 1;
     OrderType orderType = 2;
     oneof orderInfo {
         SwitchInfo switchInfo = 3;
@@ -53,9 +42,9 @@ enum OrderType {
 }
 
 message SwitchInfo {
-    NodeInfo sxServer = 1;
+    NodeControlInfo sxServer = 1;
 }
 
-message Response {
+message NodeControlResponse {
     bool ok = 1;
 }
