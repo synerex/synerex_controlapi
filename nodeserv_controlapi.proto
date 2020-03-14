@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package nodeservcontrolapi;
 
-import "github.com/synerex/synerex_nodeapi/nodeapi.proto";
+//import "github.com/synerex/synerex_nodeapi/nodeapi.proto";
+import "nodeapi.proto";
 
 option go_package="github.com/synerex/synerex_nodeserv_controlapi";
 
